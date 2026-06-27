@@ -25,7 +25,7 @@ const benefits = [
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
     ),
-    title: 'Nobody Drives. Nobody Misses Out. Everyone Home.',
+    title: 'Nobody Drives. Nobody Misses Out. Everyone Gets Home Safely.',
     body: "One person shouldn't have to spend the night worrying about driving. With a professional chauffeur handling transportation, everyone gets to enjoy the occasion and everyone gets home safely.",
   },
 ]
