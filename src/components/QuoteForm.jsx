@@ -2,6 +2,8 @@ import { useState } from 'react'
 import './QuoteForm.css'
 
 const serviceTypes = [
+  'Hourly (As Directed)',
+  'Point to Point',
   'Birthday Celebration',
   'Bachelor Party',
   'Bachelorette Party',
