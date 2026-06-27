@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import yelpLogo from '../Logo/download.png'
 import './Reviews.css'
 
 const reviews = [
@@ -201,10 +202,7 @@ export default function Reviews() {
               className="reviews-platform-btn"
               aria-label="Read our Yelp reviews"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-                <circle cx="10" cy="10" r="10" fill="#FF1A1A"/>
-                <text x="10" y="14.5" textAnchor="middle" fill="white" fontSize="12" fontWeight="800" fontFamily="Arial, sans-serif">y</text>
-              </svg>
+              <img src={yelpLogo} alt="" width="20" height="20" style={{ objectFit: 'contain' }} />
               <span>Yelp</span>
             </a>
           </div>
