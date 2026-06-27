@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './Fleet.css'
 
 import xtsExt from '../Fleet/Cadillac XTS/xts.webp'
@@ -117,17 +117,18 @@ const vehicles = [
   },
 ]
 
-function FleetCard({ v }) {
+function FleetCard({ v, eager }) {
   const [showInterior, setShowInterior] = useState(false)
 
   return (
     <div className="fleet-card">
       <div className="fleet-card-img">
-<img
+        <img
           src={showInterior ? v.interior : v.exterior}
           alt={`${v.class} ${showInterior ? 'interior' : 'exterior'}`}
           className="fleet-card-photo"
           draggable={false}
+          loading={eager ? 'eager' : 'lazy'}
         />
         <button
           className="fleet-img-arrow fleet-img-arrow--left"
@@ -188,6 +189,7 @@ function FleetCard({ v }) {
 export default function Fleet() {
   const [page, setPage] = useState(0)
   const [cardsPerPage, setCardsPerPage] = useState(2)
+  const swipeStartX = useRef(null)
 
   useEffect(() => {
     const update = () => {
@@ -202,6 +204,25 @@ export default function Fleet() {
 
   const totalPages = Math.ceil(vehicles.length / cardsPerPage)
 
+  const goNext = () => setPage(p => Math.min(totalPages - 1, p + 1))
+  const goPrev = () => setPage(p => Math.max(0, p - 1))
+
+  const onTouchStart = (e) => { swipeStartX.current = e.touches[0].clientX }
+  const onTouchEnd = (e) => {
+    if (swipeStartX.current === null) return
+    const diff = swipeStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 40) diff > 0 ? goNext() : goPrev()
+    swipeStartX.current = null
+  }
+
+  const onMouseDown = (e) => { swipeStartX.current = e.clientX }
+  const onMouseUp = (e) => {
+    if (swipeStartX.current === null) return
+    const diff = swipeStartX.current - e.clientX
+    if (Math.abs(diff) > 40) diff > 0 ? goNext() : goPrev()
+    swipeStartX.current = null
+  }
+
   return (
     <section className="fleet" id="fleet" aria-labelledby="fleet-heading">
       <div className="container">
@@ -212,7 +233,13 @@ export default function Fleet() {
         </div>
       </div>
 
-      <div className="fleet-carousel-outer">
+      <div
+        className="fleet-carousel-outer"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+      >
         <div
           className="fleet-carousel-track"
           style={{
@@ -220,7 +247,7 @@ export default function Fleet() {
           }}
         >
           {vehicles.map((v, i) => (
-            <FleetCard key={i} v={v} />
+            <FleetCard key={i} v={v} eager={i < cardsPerPage} />
           ))}
         </div>
       </div>
@@ -229,7 +256,7 @@ export default function Fleet() {
         <div className="fleet-pagination">
           <button
             className="fleet-page-arrow"
-            onClick={() => setPage(p => Math.max(0, p - 1))}
+            onClick={goPrev}
             disabled={page === 0}
             aria-label="Previous page"
           >
@@ -250,7 +277,7 @@ export default function Fleet() {
           ))}
           <button
             className="fleet-page-arrow"
-            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            onClick={goNext}
             disabled={page === totalPages - 1}
             aria-label="Next page"
           >

@@ -23,6 +23,12 @@
   overflow: hidden;
   padding-left: max(24px, calc((100vw - 1160px) / 2 + 24px));
   margin-bottom: 40px;
+  user-select: none;
+  cursor: grab;
+}
+
+.fleet-carousel-outer:active {
+  cursor: grabbing;
 }
 
 .fleet-carousel-track {
