@@ -52,12 +52,26 @@ export default function QuoteForm() {
     setForm(f => ({ ...f, [name]: value }))
   }
 
+  const encode = (data) =>
+    new URLSearchParams(data).toString()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1200))
-    setLoading(false)
-    setSubmitted(true)
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode({ 'form-name': 'special-occasion-request', ...form }),
+      })
+      setSubmitted(true)
+      setForm(defaultForm)
+    } catch (error) {
+      console.error(error)
+      alert('Submission failed')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (submitted) {
@@ -116,10 +130,14 @@ export default function QuoteForm() {
 
           <form
             className="quote-form"
+            name="special-occasion-request"
+            method="POST"
+            data-netlify="true"
             onSubmit={handleSubmit}
             noValidate
             aria-label="Chauffeur reservation request"
           >
+            <input type="hidden" name="form-name" value="special-occasion-request" />
             <div className="form-grid form-grid-2">
               <div className="form-field">
                 <label htmlFor="name" className="form-label">Full Name <span aria-hidden="true">*</span></label>
