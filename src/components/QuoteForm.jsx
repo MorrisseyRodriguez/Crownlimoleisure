@@ -40,6 +40,7 @@ const defaultForm = {
   passengers: '',
   serviceType: '',
   notes: '',
+  campaignType: 'Group Transportation',
 }
 
 export default function QuoteForm() {
@@ -62,13 +63,36 @@ export default function QuoteForm() {
       await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode({ 'form-name': 'special-occasion-request', ...form }),
+        body: encode({
+          'form-name': 'group-transportation-request',
+          campaignType: 'Group Transportation',
+          ...form,
+        }),
       })
+      const templateParams = {
+        campaignType: 'Group Transportation',
+        name: form.name || 'Not provided',
+        phone: form.phone || 'Not provided',
+        email: form.email || 'Not provided',
+        date: form.date || 'Not provided',
+        serviceType: form.serviceType || 'Not provided',
+        vehicleType: form.vehicleType || 'Not provided',
+        passengers: form.passengers || 'Not provided',
+        pickup: form.pickup || 'Not provided',
+        destination: form.destination || 'Not provided',
+        notes: form.notes || 'None',
+      }
+      await emailjs.send(
+        'service_3ft34fv',
+        'template_xpozite',
+        templateParams,
+        'OZo1S52ylqKZv5AWM'
+      )
       setSubmitted(true)
       setForm(defaultForm)
     } catch (error) {
       console.error(error)
-      alert('Submission failed')
+      alert('Submission failed. Please try again or call us directly.')
     } finally {
       setLoading(false)
     }
@@ -130,14 +154,15 @@ export default function QuoteForm() {
 
           <form
             className="quote-form"
-            name="special-occasion-request"
+            name="group-transportation-request"
             method="POST"
             data-netlify="true"
             onSubmit={handleSubmit}
             noValidate
             aria-label="Chauffeur reservation request"
           >
-            <input type="hidden" name="form-name" value="special-occasion-request" />
+            <input type="hidden" name="form-name" value="group-transportation-request" />
+            <input type="hidden" name="campaignType" value="Group Transportation" />
             <div className="form-grid form-grid-2">
               <div className="form-field">
                 <label htmlFor="name" className="form-label">Full Name <span aria-hidden="true">*</span></label>
