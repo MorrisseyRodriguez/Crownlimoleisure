@@ -59,6 +59,12 @@ export default function QuoteForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
+
+    const isNetlify = typeof window !== 'undefined' && window.location.hostname.includes('.netlify.app') || window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1') && !window.location.hostname.includes('stackblitz') && !window.location.hostname.includes('bolt')
+    if (!isNetlify) {
+      console.warn('NOTE: Netlify Forms only work on a deployed Netlify URL. Form submissions will return 404 in local/preview environments. Test on your live Netlify site.')
+    }
+
     try {
       console.log('Submitting to Netlify...')
       const netlifyBody = encode({
@@ -66,21 +72,19 @@ export default function QuoteForm() {
         campaignType: 'Group Transportation',
         ...form,
       })
-      // Validate Netlify body structure before sending
       if (!netlifyBody.includes('form-name')) {
         throw new Error('Netlify POST body is malformed: missing form-name field.')
       }
-      const netlifyRes = await fetch('/', {
+      const netlifyRes = await fetch(window.location.pathname, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: netlifyBody,
       })
       if (!netlifyRes.ok) {
-        throw new Error(`Netlify form POST failed with status ${netlifyRes.status}`)
+        throw new Error(`Netlify form POST failed with status ${netlifyRes.status}. Netlify Forms only work on deployed Netlify URLs — not in local or preview environments.`)
       }
       console.log('Netlify submission complete')
 
-      // Guard: EmailJS must be available as a global
       if (typeof emailjs === 'undefined') {
         throw new Error('emailjs is not loaded — ensure the EmailJS CDN script is present in index.html.')
       }
@@ -99,7 +103,6 @@ export default function QuoteForm() {
         notes: form.notes || 'None',
       }
 
-      // Validate template params — all values must be strings
       for (const [key, val] of Object.entries(templateParams)) {
         if (typeof val !== 'string') {
           templateParams[key] = String(val ?? 'Not provided')
@@ -142,9 +145,10 @@ export default function QuoteForm() {
       if (
         errorMessage.includes('fetch') ||
         errorMessage.includes('network') ||
-        errorMessage.includes('Netlify')
+        errorMessage.includes('Netlify') ||
+        errorMessage.includes('404')
       ) {
-        console.error('Diagnosis: Netlify form submission or network failure. Confirm the form name matches the hidden fallback form in index.html and that the site is deployed on Netlify.')
+        console.error('Diagnosis: Netlify form submission or network failure. Netlify Forms require the site to be deployed on Netlify — they will not work in local dev or Bolt preview. Confirm the form name matches the hidden fallback form in index.html.')
       }
 
       alert('Submission failed: ' + errorMessage)
