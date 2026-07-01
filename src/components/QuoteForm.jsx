@@ -60,31 +60,42 @@ export default function QuoteForm() {
     e.preventDefault()
     setLoading(true)
 
-    const isNetlify = typeof window !== 'undefined' && window.location.hostname.includes('.netlify.app') || window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1') && !window.location.hostname.includes('stackblitz') && !window.location.hostname.includes('bolt')
-    if (!isNetlify) {
-      console.warn('NOTE: Netlify Forms only work on a deployed Netlify URL. Form submissions will return 404 in local/preview environments. Test on your live Netlify site.')
+    const isLocalPreview =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname.includes('127.0.0.1') ||
+      window.location.hostname.includes('stackblitz') ||
+      window.location.hostname.includes('bolt')
+    if (isLocalPreview) {
+      console.warn('NOTE: Netlify Forms only work on a deployed Netlify URL. Netlify submission may return 404 in local/preview environments — EmailJS will still send.')
     }
 
+    // Step 1: Netlify — non-blocking, failure does not prevent EmailJS
     try {
       console.log('Submitting to Netlify...')
-      const netlifyBody = encode({
-        'form-name': 'group-transportation-request',
-        campaignType: 'Group Transportation',
-        ...form,
-      })
-      if (!netlifyBody.includes('form-name')) {
-        throw new Error('Netlify POST body is malformed: missing form-name field.')
-      }
       const netlifyRes = await fetch(window.location.pathname, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: netlifyBody,
+        body: encode({
+          'form-name': 'group-transportation-request',
+          campaignType: 'Group Transportation',
+          ...form,
+        }),
       })
       if (!netlifyRes.ok) {
-        throw new Error(`Netlify form POST failed with status ${netlifyRes.status}. Netlify Forms only work on deployed Netlify URLs — not in local or preview environments.`)
+        if (netlifyRes.status === 404) {
+          console.warn('Netlify form POST returned 404 — expected in local/preview environments. Deploy to Netlify for form capture.')
+        } else {
+          console.warn(`Netlify form POST failed with status ${netlifyRes.status}. Continuing to EmailJS.`)
+        }
+      } else {
+        console.log('Netlify submission complete')
       }
-      console.log('Netlify submission complete')
+    } catch (netlifyError) {
+      console.warn('Netlify submission error (non-blocking):', netlifyError?.message || netlifyError)
+    }
 
+    // Step 2: EmailJS — determines success/failure shown to the user
+    try {
       if (typeof emailjs === 'undefined') {
         throw new Error('emailjs is not loaded — ensure the EmailJS CDN script is present in index.html.')
       }
@@ -129,26 +140,11 @@ export default function QuoteForm() {
         JSON.stringify(error) ||
         'Unknown error'
 
-      if (
-        errorMessage.includes('emailjs') ||
-        errorMessage.includes('undefined')
-      ) {
+      if (errorMessage.includes('emailjs') || errorMessage.includes('undefined')) {
         console.error('Diagnosis: EmailJS is not loaded or unavailable. Add the EmailJS CDN script to index.html before the closing </body> tag.')
       }
-      if (
-        errorMessage.includes('public key') ||
-        errorMessage.includes('service') ||
-        errorMessage.includes('template')
-      ) {
+      if (errorMessage.includes('public key') || errorMessage.includes('service') || errorMessage.includes('template')) {
         console.error('Diagnosis: EmailJS credentials or template configuration issue. Verify service ID "service_3ft34fv", template ID "template_xpozite", and public key "OZo1S52ylqKZv5AWM" in your EmailJS dashboard.')
-      }
-      if (
-        errorMessage.includes('fetch') ||
-        errorMessage.includes('network') ||
-        errorMessage.includes('Netlify') ||
-        errorMessage.includes('404')
-      ) {
-        console.error('Diagnosis: Netlify form submission or network failure. Netlify Forms require the site to be deployed on Netlify — they will not work in local dev or Bolt preview. Confirm the form name matches the hidden fallback form in index.html.')
       }
 
       alert('Submission failed: ' + errorMessage)
