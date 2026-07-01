@@ -60,15 +60,31 @@ export default function QuoteForm() {
     e.preventDefault()
     setLoading(true)
     try {
-      await fetch('/', {
+      console.log('Submitting to Netlify...')
+      const netlifyBody = encode({
+        'form-name': 'group-transportation-request',
+        campaignType: 'Group Transportation',
+        ...form,
+      })
+      // Validate Netlify body structure before sending
+      if (!netlifyBody.includes('form-name')) {
+        throw new Error('Netlify POST body is malformed: missing form-name field.')
+      }
+      const netlifyRes = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode({
-          'form-name': 'group-transportation-request',
-          campaignType: 'Group Transportation',
-          ...form,
-        }),
+        body: netlifyBody,
       })
+      if (!netlifyRes.ok) {
+        throw new Error(`Netlify form POST failed with status ${netlifyRes.status}`)
+      }
+      console.log('Netlify submission complete')
+
+      // Guard: EmailJS must be available as a global
+      if (typeof emailjs === 'undefined') {
+        throw new Error('emailjs is not loaded — ensure the EmailJS CDN script is present in index.html.')
+      }
+
       const templateParams = {
         campaignType: 'Group Transportation',
         name: form.name || 'Not provided',
@@ -82,17 +98,56 @@ export default function QuoteForm() {
         destination: form.destination || 'Not provided',
         notes: form.notes || 'None',
       }
+
+      // Validate template params — all values must be strings
+      for (const [key, val] of Object.entries(templateParams)) {
+        if (typeof val !== 'string') {
+          templateParams[key] = String(val ?? 'Not provided')
+        }
+      }
+
+      console.log('Submitting to EmailJS...')
       await emailjs.send(
         'service_3ft34fv',
         'template_xpozite',
         templateParams,
         'OZo1S52ylqKZv5AWM'
       )
+      console.log('EmailJS submission complete')
+
       setSubmitted(true)
       setForm(defaultForm)
     } catch (error) {
-      console.error(error)
-      alert('Submission failed. Please try again or call us directly.')
+      console.error('Form submission error:', error)
+
+      const errorMessage =
+        error?.text ||
+        error?.message ||
+        JSON.stringify(error) ||
+        'Unknown error'
+
+      if (
+        errorMessage.includes('emailjs') ||
+        errorMessage.includes('undefined')
+      ) {
+        console.error('Diagnosis: EmailJS is not loaded or unavailable. Add the EmailJS CDN script to index.html before the closing </body> tag.')
+      }
+      if (
+        errorMessage.includes('public key') ||
+        errorMessage.includes('service') ||
+        errorMessage.includes('template')
+      ) {
+        console.error('Diagnosis: EmailJS credentials or template configuration issue. Verify service ID "service_3ft34fv", template ID "template_xpozite", and public key "OZo1S52ylqKZv5AWM" in your EmailJS dashboard.')
+      }
+      if (
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('network') ||
+        errorMessage.includes('Netlify')
+      ) {
+        console.error('Diagnosis: Netlify form submission or network failure. Confirm the form name matches the hidden fallback form in index.html and that the site is deployed on Netlify.')
+      }
+
+      alert('Submission failed: ' + errorMessage)
     } finally {
       setLoading(false)
     }
