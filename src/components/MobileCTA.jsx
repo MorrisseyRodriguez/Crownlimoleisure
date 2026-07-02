@@ -45,7 +45,7 @@ export default function MobileCTA({ menuOpen, setMenuOpen }) {
 
       <a
         className="mobile-bar-btn"
-        href="tel:+13105550000"
+        href="tel:+13109478898"
         aria-label="Call us"
       >
         <span className="mobile-bar-circle">

@@ -49,6 +49,7 @@ export default function Footer() {
               <li>Los Angeles, CA</li>
               <li>Serving Southern California</li>
               <li>Available 24/7</li>
+              <li><a href="tel:+13109478898">(310) 947-8898</a></li>
             </ul>
             <button className="btn-primary footer-cta" onClick={scrollToQuote}>
               Get Your Quote
