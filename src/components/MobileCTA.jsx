@@ -1,6 +1,9 @@
 import './MobileCTA.css'
 
 const scrollToQuote = () => {
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'InitiateCheckout');
+  }
   document.getElementById('quote')?.scrollIntoView({ behavior: 'smooth' })
 }
 
