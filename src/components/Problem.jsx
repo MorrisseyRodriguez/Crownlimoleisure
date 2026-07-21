@@ -2,10 +2,10 @@ import painImg from '../Images/Painstategroupchat.png'
 import './Problem.css'
 
 const painPoints = [
-  'Figuring out who rides with who.',
-  'Coordinating where everyone should meet.',
-  'Waiting on people arriving separately.',
-  'Deciding who is driving, and who has to stop drinking because of it.',
+  'Waiting for everyone to arrive.',
+  'Coordinating multiple vehicles.',
+  'Parking headaches.',
+  'Keeping track of where everyone is.',
 ]
 
 export default function Problem() {
@@ -16,7 +16,7 @@ export default function Problem() {
           <p className="section-label">The Problem</p>
           <div className="divider" />
           <h2 id="problem-heading" className="section-title reveal">
-            Transportation Has A Way Of Pulling The Organizer Out Of The Moment
+            Planning A Special Day Is Stressful Enough
           </h2>
         </div>
 
@@ -27,8 +27,8 @@ export default function Problem() {
 
         <div className="problem-body">
           <p className="problem-lead reveal reveal-delay-1">
-            You spent weeks putting it together.<br />
-            Then the day arrives and you spend it managing logistics instead of enjoying it.
+            Whether you're celebrating your child's birthday, surprising your spouse for an anniversary, or bringing friends together for a milestone, you've already put plenty of thought into making the day special.
+            <br />Transportation shouldn't distract from it.
           </p>
           <ul className="problem-list" aria-label="Transportation pain points">
             {painPoints.map((p, i) => (
@@ -40,10 +40,7 @@ export default function Problem() {
           </ul>
           <div className="problem-conclusion reveal reveal-delay-2">
             <p>
-              You planned the occasion to spend time with the people you're celebrating.
-            </p>
-            <p>
-              Not to spend the night managing transportation.
+              The best memories happen when everyone gets to enjoy the day together.
             </p>
           </div>
         </div>

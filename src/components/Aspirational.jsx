@@ -9,7 +9,7 @@ export default function Aspirational() {
           <p className="section-label">The Experience</p>
           <div className="divider" />
           <h2 id="aspirational-heading" className="section-title reveal">
-            When Everything Flows The Way It Should
+            Create A Day They'll Never Forget
           </h2>
         </div>
 
@@ -23,16 +23,10 @@ export default function Aspirational() {
 
         <div className="aspirational-body">
           <p className="aspirational-pull reveal reveal-delay-1">
-            The celebration begins the moment you step outside together.
+            Instead of juggling rides and watching the clock, you're sharing stories, laughing together, and watching the excitement build as you head toward the celebration.
           </p>
           <div className="aspirational-paragraphs reveal reveal-delay-2">
-            <p>Your chauffeur is already waiting. The vehicle is clean, comfortable, and exactly what you expected.</p>
-            <p>Everyone is in one place. Nobody is coordinating rides. Nobody is checking an app. Nobody is worrying about getting home.</p>
-            <p>The conversation flows. The energy builds. The occasion feels effortless from the first moment to the last.</p>
-            <p>You stay focused on the people you're with, and the reason you all came together.</p>
-          </div>
-          <div className="aspirational-close reveal reveal-delay-3">
-            <p className="aspirational-close-strong">The way a special occasion should feel.</p>
+            <p>Every detail has already been taken care of, so you can be fully present for the moments you'll remember long after the day is over.</p>
           </div>
         </div>
       </div>
