@@ -1,4 +1,4 @@
-import aspirationalImg from '../Images/sunnyinsidesprinter.png'
+import aspirationalImg from '../Images/Friendsinsprinter.png'
 import './Aspirational.css'
 
 export default function Aspirational() {
@@ -14,7 +14,7 @@ export default function Aspirational() {
         </div>
 
         <div className="aspirational-image-wrap reveal">
-          <img src={aspirationalImg} alt="Sunny interior of a luxury sprinter van" className="aspirational-image" />
+          <img src={aspirationalImg} alt="Friends enjoying a luxury sprinter van together" className="aspirational-image" />
           <div className="aspirational-badge" aria-label="Serving Southern California Since 1994">
             <span className="aspirational-badge-year">1994</span>
             <span className="aspirational-badge-text">Serving SoCal</span>
@@ -22,10 +22,8 @@ export default function Aspirational() {
         </div>
 
         <div className="aspirational-body">
-          <p className="aspirational-pull reveal reveal-delay-1">
-            Instead of juggling rides and watching the clock, you're sharing stories, laughing together, and watching the excitement build as you head toward the celebration.
-          </p>
-          <div className="aspirational-paragraphs reveal reveal-delay-2">
+          <div className="aspirational-paragraphs reveal reveal-delay-1">
+            <p>Instead of juggling rides and watching the clock, you're sharing stories, laughing together, and watching the excitement build as you head toward the celebration.</p>
             <p>Every detail has already been taken care of, so you can be fully present for the moments you'll remember long after the day is over.</p>
           </div>
         </div>

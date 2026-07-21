@@ -1,4 +1,4 @@
-import heroImg from '../Images/sunnyinsidesprinter.png'
+import heroImg from '../Images/Friendsinsprinter.png'
 import './Hero.css'
 
 export default function Hero() {
@@ -7,7 +7,7 @@ export default function Hero() {
       <div className="hero-bg">
         <img
           src={heroImg}
-          alt="Sunny interior of a luxury sprinter van"
+          alt="Friends enjoying a luxury sprinter van together"
           className="hero-image"
           fetchPriority="high"
           loading="eager"
