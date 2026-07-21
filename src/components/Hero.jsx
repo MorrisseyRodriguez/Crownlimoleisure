@@ -21,7 +21,7 @@ export default function Hero() {
           Keep Everyone Together From The First Moment To The Last.
         </h1>
         <p className="hero-subtitle">
-          Whether you're planning a birthday, bachelor or bachelorette party, sporting event, concert, winery tour, brewery tour, or night out in Los Angeles, Crown helps your group stay together, stay present, and enjoy the occasion without transportation becoming a distraction.
+          Luxury group transportation across Los Angeles, so you can spend less time coordinating rides and more time celebrating with the people who matter most.
         </p>
       </div>
     </section>
